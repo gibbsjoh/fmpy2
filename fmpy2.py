@@ -207,7 +207,7 @@ def getRecord(fmWhere,fmWhat,fms):
     try:
         keyField = fmWhere['keyField']
     except:
-        keyField = None
+        keyField = "null"
     try:
         fmResultRaw = fmWhere['fmResultRaw']
     except:
@@ -225,12 +225,12 @@ def getRecord(fmWhere,fmWhat,fms):
             fmResult = {'data':fmResult}
         else:
             dataArray = []
-            returnArray = []
+            returnArray = {}
             #thisData = {}
             i = 0
             for r in fmResult:
                 thisRecord = fmResult[i]
-                if keyField is not None:
+                if keyField != 'null':
                     keyFieldValue = thisRecord[keyField]
                 else:
                     keyFieldValue = i
