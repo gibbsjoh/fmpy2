@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# fmPy v2.0a1
+# fmPy v2.1
 ########################
 #
 # This is a major-ish update to fmPy based on what I'm learning as I go along.
@@ -18,7 +18,8 @@
 #  This makes it a bit easier to understand
 #  fmWhere is the serverName, databaseName, layoutName and action
 #  fmWhat is the data for the relevant action
-#  don't worry! the old format array is still supported (see main())
+#
+#  **** NOTE The old parameters still work, we just reassemble them. However this may change.
 #
 #   fmWhere:
 #   action (see actions below)
@@ -114,35 +115,41 @@ fmrest.utils.TIMEOUT = 300
 
 def parseParameters(form):
     payloadRaw = form.getvalue('payloadData')
-    try:
-        payloadClean = urllib.parse.unquote(payloadRaw) # replaces URL encloding such as '%20'
-        formJSON = json.loads(payloadClean) # loads the data into a JSON array
-        formError = 0
-    except:
-        formError = 1
-    
-    # when calling the old fmPy we used a different schema, so map new schema to old if needed
-    if(formError == 0):
-        try:
-            fmWhat = formJSON['fmWhat']
-            fmWhere = formJSON['fmWhere']
-            dataSchema = 'new'
-            action = fmWhere['action']
-        except:
-            #assemble 'fmWhere'
-            action = formJSON['action']
-            serverName = formJSON['serverName']
-            databaseName = formJSON['databaseName']
-            layoutName = formJSON['layoutName']
-            fmWhere = {'action':action,'serverName':serverName,'databaseName':databaseName,'layoutName':layoutName}
+    if payloadRaw == 'selftest':
+        action = 'selftest'
+        fmWhat = fmInfo.stQuery
+        fmWhere = {'action':action,'serverName':fmInfo.stServer,'databaseName':fmInfo.stDatabase,'layoutName':fmInfo.stLayout}
 
-            #assemble 'fmWhat'
-            fmWhat = formJSON['data']
-            dataSchema = 'old'
     else:
-        action = "parameterMissing"
-        fmWhat = {}
-        fmWhere = {}
+        try:
+            payloadClean = urllib.parse.unquote(payloadRaw) # replaces URL encloding such as '%20'
+            formJSON = json.loads(payloadClean) # loads the data into a JSON array
+            formError = 0
+        except:
+            formError = 1
+        
+        # when calling the old fmPy we used a different schema, so map new schema to old if needed
+        if(formError == 0):
+            try:
+                fmWhat = formJSON['fmWhat']
+                fmWhere = formJSON['fmWhere']
+                dataSchema = 'new'
+                action = fmWhere['action']
+            except:
+                #assemble 'fmWhere'
+                action = formJSON['action']
+                serverName = formJSON['serverName']
+                databaseName = formJSON['databaseName']
+                layoutName = formJSON['layoutName']
+                fmWhere = {'action':action,'serverName':serverName,'databaseName':databaseName,'layoutName':layoutName}
+
+                #assemble 'fmWhat'
+                fmWhat = formJSON['data']
+                dataSchema = 'old'
+        else:
+            action = "parameterMissing"
+            fmWhat = {}
+            fmWhere = {}
     return (action, fmWhat, fmWhere)
 
 def fmConnect(fmWhere):
@@ -156,6 +163,39 @@ def fmConnect(fmWhere):
         )
     fms.login()
     return fms
+
+def selftest(fmWhere,fmWhat,fms):
+    resultLine1 = ('Selftest....<br><br>Testing connectivity to:<br>'+fmWhere['serverName']+'<br>'+fmWhere['databaseName']+' -> '+ fmWhere['layoutName'])
+    print(resultLine1)
+    print('<br><b>Note: Only the first 2 records are displayed</b><br>')
+    find_query = [fmWhat]
+    try:
+        fmResult = fms.find(query=find_query,limit=2)
+        returnArray = {'data':fmResult}
+        i = 0
+        success = 1
+        #serverResponse = json.dumps(returnArray)
+        resultLine2 = ('<br><br>Test successful, server returned:<br>')
+        print(resultLine2)
+        for r in fmResult:
+            thisRecord = fmResult[i]
+            keyFieldValue = i
+            f = {}
+            keys = thisRecord.keys()
+            for key in keys:
+                # get the value for the field
+                value = thisRecord[key]
+                print(key,':',value,'<br>')
+            print('------<br>')
+            i = i + 1
+
+    except FileMakerError as findError:
+        fmResult = str(findError)
+        success = 0
+        resultLine2 = '<br><br>Test failed. FM Server responded:<br>'
+        print(resultLine2)
+        print(fmResult)
+    return "<br><br>Selftest Complete"
 
 def getRecord(fmWhere,fmWhat,fms):
     try:
@@ -185,6 +225,7 @@ def getRecord(fmWhere,fmWhat,fms):
             fmResult = {'data':fmResult}
         else:
             dataArray = []
+            returnArray = []
             #thisData = {}
             i = 0
             for r in fmResult:

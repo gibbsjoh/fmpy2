@@ -8,8 +8,8 @@
 ########################
 import os
 
-userName = 'userName'
-myPassword = 'somePassword'
+userName = 'admin'
+myPassword = 'dance200'
 eventLogUser = 'someOtherUsrerName'
 
 # any custom functions here
@@ -18,3 +18,12 @@ eventLogUser = 'someOtherUsrerName'
 localPath = os.getcwd()
 windowsPath = (localPath +'\\files\\')
 linuxPath = ('/var/www/html/')
+
+# 21/01/23 - adding selftest function
+# the variables below define the connection and query to use 
+stServer = 'https://fmserver.smthng.pw'
+stDatabase = 'DAPITest'
+stLayout = 'DAPITest'
+stUserName = 'admin'
+stPassword = 'dance200'
+stQuery =  {'_c1': '1'}
