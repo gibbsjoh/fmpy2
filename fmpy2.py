@@ -210,6 +210,7 @@ def getRecord(fmWhere,fmWhat,fms):
         keyField = "null"
     try:
         fmResultRaw = fmWhere['fmResultRaw']
+        returnArray = {}
     except:
         fmResultRaw = 0
     #set up query
@@ -222,7 +223,25 @@ def getRecord(fmWhere,fmWhat,fms):
         success = 0
     if(success == 1):
         if(fmResultRaw == 1):
-            fmResult = {'data':fmResult}
+            #this SHOULD return the data in the same format as the "response" part of an Execute FileMaker Data API script step
+            i = 0
+            dataArray = []
+            for r in fmResult:
+                thisRecord = fmResult[i]
+                f = {}
+                keys = thisRecord.keys()
+                for key in keys:
+                    # get the value for the field
+                    value = thisRecord[key]
+                    f[key] = value
+                
+                wrapper = {'fieldData':f}
+                dataArray.append(wrapper)
+                
+                i = i + 1
+
+            returnArray = {'data':dataArray}
+            fmResult = json.dumps(returnArray)
         else:
             dataArray = []
             returnArray = {}
