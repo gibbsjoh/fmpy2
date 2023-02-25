@@ -8,8 +8,8 @@
 ########################
 import os
 
-userName = 'admin'
-myPassword = 'dance200'
+userName = 'dapiUser'
+myPassword = 'myPassword'
 eventLogUser = 'someOtherUsrerName'
 
 # any custom functions here
@@ -24,6 +24,6 @@ linuxPath = ('/var/www/html/')
 stServer = 'https://fmserver.smthng.pw'
 stDatabase = 'DAPITest'
 stLayout = 'DAPITest'
-stUserName = 'admin'
-stPassword = 'dance200'
+stUserName = 'testUser'
+stPassword = 'myPassword'
 stQuery =  {'_c1': '1'}
