@@ -354,7 +354,7 @@ def updateRecord(fmWhere,fmWhat,fms):
         record = foundset[0]
         for key in keys:
             if key != 'pk' and key != 'uuid':
-                value = fmPayload[key]
+                value = fmWhat[key]
                 record[key] = value
         try:
             fms.edit(record)
