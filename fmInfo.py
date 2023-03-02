@@ -9,7 +9,7 @@
 import os
 
 userName = 'admin'
-myPassword = 'dance200'
+myPassword = 'password'
 eventLogUser = 'someOtherUsrerName'
 
 # any custom functions here
@@ -21,9 +21,9 @@ linuxPath = ('/var/www/html/')
 
 # 21/01/23 - adding selftest function
 # the variables below define the connection and query to use 
-stServer = 'https://fmserver.smthng.pw'
+stServer = 'https://myfm.server.com
 stDatabase = 'DAPITest'
 stLayout = 'DAPITest'
 stUserName = 'admin'
-stPassword = 'dance200'
+stPassword = 'password'
 stQuery =  {'_c1': '1'}
