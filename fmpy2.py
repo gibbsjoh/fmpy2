@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# fmPy v2.2
+# fmPy v2.1
 ########################
 #
 # This is a major-ish update to fmPy based on what I'm learning as I go along.
@@ -37,8 +37,9 @@ import platform
 #################################
 import fmInfo
 
-import fmpy-functions
+import fmpyfunctions as fpy
 
+testToggle = 0
 
 ##########################
 #  main() Definition    #
@@ -49,23 +50,29 @@ def main():
     form = cgi.FieldStorage()
 
     #parse the form from URL
-    theWholeMegillah = parseParameters(form)
+    theWholeMegillah = fpy.parseParameters(form)
     action =  theWholeMegillah[0]
 
     # change here to appent fmpy-functions to action
-    action = 'fmpy-functions.' + action
+    #action = 'fmpyfunctions.' + action
 
     fmWhat = theWholeMegillah[1]
     fmWhere = theWholeMegillah[2]
 
     #connect to FMS (could even roll this into functions...)
-    fms = fmConnect(fmWhere)
+    fms = fpy.fmConnect(fmWhere)
 
     # ok now we call the function
-    selectedFunction = globals()[action]
-    result = selectedFunction(fmWhere,fmWhat,fms)
-
-    print(result)
+    if (testToggle == 1):
+        result = fpy.updateRecord(fmWhere,fmWhat,fms)
+    else:
+        try:
+            selectedFunction = getattr(fpy, action)
+            result = selectedFunction(fmWhere,fmWhat,fms)
+            print(result)
+        except AttributeError:
+            print ('ERROR - function not found')
+        #selectedFunction = globals()['fmpyfunctions.'+action]
 
     #FMS logout for cleanliness
     fms.logout()
