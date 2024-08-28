@@ -1,7 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
-# fmPy v2.1
+# fmPy v2.21
 ########################
+#
+# Changes in 2.21:
+#   1. moved the 'action' parameter outside of the payloadData JSON parameter, to enable a quick webserver test (will be rewritten later)
 #
 # This is a major-ish update to fmPy based on what I'm learning as I go along.
 # main changes:
@@ -39,7 +42,18 @@ import fmInfo
 
 import fmpyfunctions as fpy
 
+#################################
+#  import html stuff if needed  #
+#################################
+try:
+    import htmlSnippets
+    extHTMLFile = 1
+except:
+    extHTMLFile = 1
+
 testToggle = 0
+thisVersion = '2.21'
+testResultIfOK = 'PLACEHOLDER!'
 
 ##########################
 #  main() Definition    #
@@ -49,24 +63,30 @@ def main():
     print("Content-type: text/html\n\n")
     form = cgi.FieldStorage()
 
-    #parse the form from URL
-    theWholeMegillah = fpy.parseParameters(form)
-    action =  theWholeMegillah[0]
-
-    # change here to appent fmpy-functions to action
-    #action = 'fmpyfunctions.' + action
-
-    fmWhat = theWholeMegillah[1]
-    fmWhere = theWholeMegillah[2]
-
-    #connect to FMS (could even roll this into functions...)
-    fms = fpy.fmConnect(fmWhere)
-
-    # ok now we call the function
-    if (testToggle == 1):
-        result = fpy.updateRecord(fmWhere,fmWhat,fms)
+    if 'action' not in form.keys() and 'payloadData' not in form.keys():
+        action = 'noParameters'
     else:
         try:
+            action = form.getvalue('action')
+
+        except:
+            theWholeMegillah = fpy.parseParameters(form)
+            action =  theWholeMegillah[0]
+
+
+    #parse the form from URL
+    # ok now we call the function
+    if (action == 'test'):
+        theResult = htmlSnippets.htmlHeader + '<br>Self Test<br><br>Success! fmPy2 is installed where specified, and it can be run by the webserver.<br>Version: ' + thisVersion + '<br>' + htmlSnippets.htmlFooter
+        print(theResult)
+    elif (action == 'noParameters'):
+        print('No parameters were passed. We have nothing to do!')
+    else:
+        try:
+            fmWhat = theWholeMegillah[1]
+            fmWhere = theWholeMegillah[2]
+            #connect to FMS (could even roll this into functions...)
+            fms = fpy.fmConnect(fmWhere)
             selectedFunction = getattr(fpy, action)
             result = selectedFunction(fmWhere,fmWhat,fms)
             print(result)

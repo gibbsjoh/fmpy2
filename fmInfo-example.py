@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 # v.12
+
+# ***** IMPORTANT!!!
+# Rename this file as fmInfo.py before use and replace the needed credentials below.
+
 ########################
 #
 # Variables that aren't functions live here, such as:
@@ -11,8 +15,8 @@
 ########################
 import os
 
-userName = 'data_api'
-myPassword = 'Qu4rk5B4r?'
+userName = 'user'
+myPassword = 'password?'
 eventLogUser = 'someOtherUsrerName'
 
 # any custom functions here
@@ -24,7 +28,7 @@ linuxPath = ('/var/www/html/')
 
 # 21/01/23 - adding selftest function
 # the variables below define the connection and query to use 
-stServer = 'https://fmserver.smthng.pw'
+stServer = 'https://mytestserver.com'
 stDatabase = 'DAPITest'
 stLayout = 'DAPITest'
 stUserName = 'testUser'

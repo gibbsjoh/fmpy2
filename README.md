@@ -1,11 +1,10 @@
 # fmpy2
-v2 of fmPy - Python to FileMaker data api
-# fmpy2
+
+
 
 ## Getting started
 
 Basic howto! 
-
 fmpy2.py expects to be passed a JSON array in "payloadData" eg https://yourwebserver.local/fmpy2.py?payloadData={blah blah blah}
 
 payloadData consists of 2 arrays - fmWhere and fmWhat.
@@ -17,7 +16,6 @@ fmWhat tells fmpy2 what you want to do with the action in fmWhere - in its most 
 If fmpy2 is returning an error or isn't working as expected, check the URL first just in case.
 
 An example URL for a simple getRecord action is:
-
 https://mywebserver.local/fmpy2/fmpy2.py?payloadData={"fmWhat":{"FirstName":"Throatwarbler","LastName":"Mangrove"},"fmWhere":{"action":"getRecord","databaseName":"MyFMSolution","fmResultRaw":1,"keyField":"null","layoutName":"MyLayout","serverName":"https://myfmserver.mydomain.com"}}
 
 
